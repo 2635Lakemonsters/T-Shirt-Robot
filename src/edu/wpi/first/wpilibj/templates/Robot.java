@@ -9,6 +9,7 @@ package edu.wpi.first.wpilibj.templates;
 
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -33,41 +34,58 @@ public class Robot extends IterativeRobot {
     
     final int id_BARRELMOTOR = 5;
     
+    final int id_JOYSTICK = 0;
+    
+    final int id_LEFTSTICKXAXIS = 0;
+    final int id_LEFTSTICKYAXIS = 1;
+    final int id_RIGHTSTICKYAXIS = 5;
+    
+    
+    
     //DEVICE DECLARATIONS
-    Talon LEFTMOTOR1;
-    Talon LEFTMOTOR2;
-    Talon RIGHTMOTOR1;
-    Talon RIGHTMOTOR2;
-    Talon BARRELMOTOR;
+    Talon leftMotor1;
+    Talon leftMotor2;
+    Talon rightMotor1;
+    Talon rightMotor2;
+    Talon barrelMotor;
+    
+    Joystick joystick;
            
     public void robotInit() 
     {
-        LEFTMOTOR1 = new Talon(id_LEFTMOTOR1);
-        LEFTMOTOR2 = new Talon(id_LEFTMOTOR2);
-        RIGHTMOTOR1 = new Talon(id_RIGHTMOTOR1);
-        RIGHTMOTOR2 = new Talon(id_RIGHTMOTOR2);
-        BARRELMOTOR = new Talon(id_BARRELMOTOR);
+        leftMotor1 = new Talon(id_LEFTMOTOR1);
+        leftMotor2 = new Talon(id_LEFTMOTOR2);
+        rightMotor1 = new Talon(id_RIGHTMOTOR1);
+        rightMotor2 = new Talon(id_RIGHTMOTOR2);
+        barrelMotor = new Talon(id_BARRELMOTOR);
+        
+        joystick = new Joystick(id_JOYSTICK);
     }
 
     /**
      * This function is called periodically during autonomous
      */
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic() 
+    {
 
     }
 
     /**
      * This function is called periodically during operator control
      */
-    public void teleopPeriodic() {
-        
+    public void teleopPeriodic() 
+    {
+        double leftStickXAxis = joystick.getRawAxis(0);
+        double leftStickYAxis = joystick.getRawAxis(1);
+        double rightStickYAxis = joystick.getRawAxis(5);
     }
     
     /**
      * This function is called periodically during test mode
      */
-    public void testPeriodic() {
-    
+    public void testPeriodic() 
+    {
+        
     }
     
 }
