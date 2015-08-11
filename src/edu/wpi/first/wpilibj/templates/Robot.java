@@ -34,7 +34,7 @@ public class Robot extends IterativeRobot {
     
     final int id_BARRELMOTOR = 5;
     
-    final int id_JOYSTICK = 0;
+    final int id_JOYSTICK = 1;
     
     final int id_LEFTSTICKXAXIS = 0;
     final int id_LEFTSTICKYAXIS = 1;
@@ -50,6 +50,7 @@ public class Robot extends IterativeRobot {
     Talon barrelMotor;
     
     Joystick joystick;
+    ArcadeDrive drive;
            
     public void robotInit() 
     {
@@ -60,6 +61,7 @@ public class Robot extends IterativeRobot {
         barrelMotor = new Talon(id_BARRELMOTOR);
         
         joystick = new Joystick(id_JOYSTICK);
+        drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
     }
 
     /**
@@ -75,9 +77,12 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() 
     {
-        double leftStickXAxis = joystick.getRawAxis(0);
-        double leftStickYAxis = joystick.getRawAxis(1);
-        double rightStickYAxis = joystick.getRawAxis(5);
+        double leftStickXAxis = joystick.getRawAxis(id_LEFTSTICKXAXIS);
+        double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
+        double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
+        System.out.println(leftStickXAxis);
+        
+        drive.Drive(leftStickXAxis, leftStickYAxis);
     }
     
     /**

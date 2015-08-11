@@ -5,10 +5,25 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.RobotDrive;
+import edu.wpi.first.wpilibj.SpeedController;
+
 /**
  *
  * @author localuser
  */
-public class ArcadeDrive {
+public class ArcadeDrive extends RobotDrive 
+{
+    /**
+     *
+     */
+    public ArcadeDrive(SpeedController leftMotor1, SpeedController leftMotor2, SpeedController rightMotor1, SpeedController rightMotor2)
+    {
+        super(leftMotor1, leftMotor2, rightMotor1, rightMotor2);      
+    }
     
+    public void Drive(double yAxis, double rotation)
+    {
+        arcadeDrive(yAxis, rotation);
+    }
 }
