@@ -80,7 +80,6 @@ public class Robot extends IterativeRobot {
         double leftStickXAxis = joystick.getRawAxis(id_LEFTSTICKXAXIS);
         double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
         double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
-        System.out.println(leftStickXAxis);
         
         drive.Drive(leftStickXAxis, leftStickYAxis);
     }
