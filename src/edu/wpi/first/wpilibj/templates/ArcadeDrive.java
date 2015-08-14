@@ -22,7 +22,7 @@ public class ArcadeDrive extends RobotDrive
         super(leftMotor1, leftMotor2, rightMotor1, rightMotor2);      
     }
     
-    public void Drive(double yAxis, double rotation)
+    public void drive(double yAxis, double rotation)
     {
         arcadeDrive(yAxis, rotation);
     }

@@ -10,6 +10,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -33,6 +34,7 @@ public class Robot extends IterativeRobot {
     final int id_RIGHTMOTOR2 = 4;
     
     final int id_BARRELMOTOR = 5;
+    final int id_ELEVATIONMOTOR = 6;
     
     final int id_JOYSTICK = 1;
     
@@ -48,9 +50,13 @@ public class Robot extends IterativeRobot {
     Talon rightMotor1;
     Talon rightMotor2;
     Talon barrelMotor;
+    Talon elevationMotor;
+    
+    Relay solenoid;
     
     Joystick joystick;
-    ArcadeDrive drive;
+    ArcadeDrive Drive;
+    Launcher Launcher;
            
     public void robotInit() 
     {
@@ -59,9 +65,13 @@ public class Robot extends IterativeRobot {
         rightMotor1 = new Talon(id_RIGHTMOTOR1);
         rightMotor2 = new Talon(id_RIGHTMOTOR2);
         barrelMotor = new Talon(id_BARRELMOTOR);
+        elevationMotor = new Talon(id_BARRELMOTOR);
+        
+        solenoid = new Relay(1);
         
         joystick = new Joystick(id_JOYSTICK);
-        drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
+        Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
+        Launcher = new Launcher(barrelMotor, solenoid, false);
     }
 
     /**
@@ -81,7 +91,8 @@ public class Robot extends IterativeRobot {
         double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
         double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
         
-        drive.Drive(leftStickXAxis, leftStickYAxis);
+        Drive.drive(leftStickXAxis, leftStickYAxis);
+        elevationMotor.set(rightStickYAxis);
     }
     
     /**
