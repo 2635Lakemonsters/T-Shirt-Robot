@@ -41,6 +41,9 @@ public class Robot extends IterativeRobot {
     final int id_LEFTSTICKXAXIS = 0;
     final int id_LEFTSTICKYAXIS = 1;
     final int id_RIGHTSTICKYAXIS = 5;
+    //REPLACE VALUES BELOW
+    final int id_LEFTTRIGGER = 9;
+    final int id_RIGHTTRIGGER = 10;
     
     
     
@@ -90,9 +93,17 @@ public class Robot extends IterativeRobot {
         double leftStickXAxis = joystick.getRawAxis(id_LEFTSTICKXAXIS);
         double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
         double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
+        double leftTrigger = joystick.getRawAxis(id_LEFTTRIGGER);
+        double rightTrigger = joystick.getRawAxis(id_RIGHTTRIGGER);
         
         Drive.drive(leftStickXAxis, leftStickYAxis);
         elevationMotor.set(rightStickYAxis);
+        
+        if(leftTrigger == 1 & rightTrigger == 1)
+        {
+            Launcher.fire();
+        }
+        
     }
     
     /**
