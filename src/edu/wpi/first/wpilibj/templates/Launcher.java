@@ -6,6 +6,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.SpeedController;
 
 /**
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  */
 public class Launcher 
 {
+    private final Relay relay;
  /**
  *   @param barrelMotor Pass the variable containing the barrel rotation motor
  *   @param solenoid Pass the variable containing the firing solenoid
@@ -22,6 +24,7 @@ public class Launcher
  */
     public Launcher(SpeedController barrelMotor, Relay solenoid, boolean override)
     {
+        relay = solenoid;
         
     }
     
@@ -30,6 +33,7 @@ public class Launcher
         if(checkYourPrivilege())
         {
            //FIRE
+           relay.set(Value.kForward);
            System.out.println("FIRE!");
         }
         else
@@ -41,7 +45,7 @@ public class Launcher
     public boolean checkYourPrivilege()
     {
         boolean privileged;
-        if(1 == 0)       
+        if(1 == 1)       
         {
             privileged = true;
         }

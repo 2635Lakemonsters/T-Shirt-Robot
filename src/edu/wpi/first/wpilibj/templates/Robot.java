@@ -38,12 +38,12 @@ public class Robot extends IterativeRobot {
     
     final int id_JOYSTICK = 1;
     
-    final int id_LEFTSTICKXAXIS = 0;
-    final int id_LEFTSTICKYAXIS = 1;
+    final int id_LEFTSTICKXAXIS = 1;
+    final int id_LEFTSTICKYAXIS = 2;
     final int id_RIGHTSTICKYAXIS = 5;
     //REPLACE VALUES BELOW
-    final int id_LEFTTRIGGER = 9;
-    final int id_RIGHTTRIGGER = 10;
+    final int id_LEFTTRIGGER = 5;
+    final int id_RIGHTTRIGGER = 6;
     
     
     
@@ -68,7 +68,7 @@ public class Robot extends IterativeRobot {
         rightMotor1 = new Talon(id_RIGHTMOTOR1);
         rightMotor2 = new Talon(id_RIGHTMOTOR2);
         barrelMotor = new Talon(id_BARRELMOTOR);
-        elevationMotor = new Talon(id_BARRELMOTOR);
+        elevationMotor = new Talon(id_ELEVATIONMOTOR);
         
         solenoid = new Relay(1);
         
@@ -93,14 +93,15 @@ public class Robot extends IterativeRobot {
         double leftStickXAxis = joystick.getRawAxis(id_LEFTSTICKXAXIS);
         double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
         double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
-        double leftTrigger = joystick.getRawAxis(id_LEFTTRIGGER);
-        double rightTrigger = joystick.getRawAxis(id_RIGHTTRIGGER);
+        boolean leftTrigger = joystick.getRawButton(id_LEFTTRIGGER);
+        boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
         
-        Drive.drive(leftStickXAxis, leftStickYAxis);
+        Drive.drive(-leftStickYAxis, leftStickXAxis);
         elevationMotor.set(rightStickYAxis);
         
-        if(leftTrigger == 1 & rightTrigger == 1)
+        if(leftTrigger & rightTrigger)
         {
+            System.out.println("Fire!");
             Launcher.fire();
         }
         
@@ -111,7 +112,7 @@ public class Robot extends IterativeRobot {
      */
     public void testPeriodic() 
     {
-        
+       
     }
     
 }
