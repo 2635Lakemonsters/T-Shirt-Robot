@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.SpeedController;
 public class Launcher 
 {
     private final Relay relay;
+    private final Timer timer;
+    public int currentTime = 0;
  /**
  *   @param barrelMotor Pass the variable containing the barrel rotation motor
  *   @param solenoid Pass the variable containing the firing solenoid
@@ -25,16 +27,16 @@ public class Launcher
     public Launcher(SpeedController barrelMotor, Relay solenoid, boolean override)
     {
         relay = solenoid;
-        
+        timer = new Timer();
     }
     
     public void fire()
     {
         if(checkYourPrivilege())
         {
-           //FIRE
+           //Firing code here
+           System.out.println("Firing...");
            relay.set(Value.kForward);
-           System.out.println("FIRE!");
         }
         else
         {
@@ -45,16 +47,38 @@ public class Launcher
     public boolean checkYourPrivilege()
     {
         boolean privileged;
+        //TODO, add sensors
         if(1 == 1)       
         {
+            //Sensors OK, allowing firing
             privileged = true;
         }
         else
         {
+            //Sensors not clear, not allowing fire.
             privileged = false;
         }
         
         return privileged;
+    }
+    
+    public void timedActions()
+    {
+        if(timer.getTime() > 1)
+        {
+            timer.tick();
+            currentTime = timer.getTime();              
+        }
+        
+        if(currentTime == 3)
+        {
+            relay.set(Value.kReverse);
+            
+            //Last Command, resetting timer
+            timer.reset();
+        }
+        
+        //Implement other timed stuff here
     }
     
 }
