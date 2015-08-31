@@ -17,17 +17,22 @@ import edu.wpi.first.wpilibj.SpeedController;
 public class Launcher 
 {
     private final Relay relay;
+    private final SpeedController barrelMotor;
     private final Timer timer;
-    public int currentTime = 0;
+    private final boolean override;
+    public int currentTick = 0;
  /**
- *   @param barrelMotor Pass the variable containing the barrel rotation motor
+ *   @param rotateMotor Pass the variable containing the barrel rotation motor
  *   @param solenoid Pass the variable containing the firing solenoid
- *   @param override PASS THIS FALSE UNLESS YOU LIKE THINGS KILLING PEOPLE.
+ *   @param overrideLogic PASS THIS FALSE UNLESS YOU LIKE THINGS KILLING PEOPLE.
  */
-    public Launcher(SpeedController barrelMotor, Relay solenoid, boolean override)
+    public Launcher(SpeedController rotateMotor, Relay solenoid, boolean overrideLogic)
     {
         relay = solenoid;
         timer = new Timer();
+        barrelMotor = rotateMotor;
+        override = overrideLogic;
+        
     }
     
     public void fire()
@@ -47,16 +52,23 @@ public class Launcher
     public boolean checkYourPrivilege()
     {
         boolean privileged;
-        //TODO, add sensors
-        if(1 == 1)       
+        if(override == true)
         {
-            //Sensors OK, allowing firing
             privileged = true;
         }
         else
         {
-            //Sensors not clear, not allowing fire.
-            privileged = false;
+            //TODO, add sensors. Maybe even use another class and method.
+            if(1 == 1)       
+            {
+                //Sensors OK, allowing firing
+                privileged = true;
+            }
+            else
+            {
+                //Sensors not clear, not allowing fire.
+                privileged = false;
+            }
         }
         
         return privileged;
@@ -64,15 +76,23 @@ public class Launcher
     
     public void timedActions()
     {
-        if(timer.getTime() > 1)
+        if(timer.getTick() > 1)
         {
+            //Timer initialized, ticking...
             timer.tick();
-            currentTime = timer.getTime();              
+            currentTick = timer.getTick();              
         }
         
-        if(currentTime == 3)
+        if(currentTick == 3)
         {
             relay.set(Value.kReverse);
+            barrelMotor.set(.25);
+        }
+        
+        if(currentTick == 53)
+        {
+            //1000ms later, stopping rotation motor
+            barrelMotor.set(0);
             
             //Last Command, resetting timer
             timer.reset();

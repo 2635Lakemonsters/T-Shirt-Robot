@@ -10,20 +10,20 @@ package edu.wpi.first.wpilibj.templates;
  */
 public class Timer 
 {
-  public int time = 0;
+  public int tick = 0;
   
   public void tick()
   {
-      ++time;
+      ++tick;
   }
   
-  public int getTime()
+  public int getTick()
   {
-      return time;
+      return tick;
   }
   
   public void reset()
   {
-      time = 0;
+      tick = 0;
   }
 }

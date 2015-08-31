@@ -102,7 +102,7 @@ public class Robot extends IterativeRobot {
         
         if(leftTrigger & rightTrigger)
         {
-            System.out.println("Joystick fire command, attempting to fire...");
+            //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire();
         }
         
