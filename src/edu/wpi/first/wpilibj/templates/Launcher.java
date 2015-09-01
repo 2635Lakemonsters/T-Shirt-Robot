@@ -42,6 +42,7 @@ public class Launcher
            //Firing code here
            System.out.println("Firing...");
            relay.set(Value.kForward);
+           timer.tick();
         }
         else
         {
@@ -59,7 +60,7 @@ public class Launcher
         else
         {
             //TODO, add sensors. Maybe even use another class and method.
-            if(1 == 1)       
+            if(timer.getTick() < 1)       
             {
                 //Sensors OK, allowing firing
                 privileged = true;
@@ -80,12 +81,14 @@ public class Launcher
         {
             //Timer initialized, ticking...
             timer.tick();
-            currentTick = timer.getTick();              
+            currentTick = timer.getTick();  
+            System.out.println(currentTick);
         }
         
-        if(currentTick == 3)
+        if(currentTick == 5)
         {
-            relay.set(Value.kReverse);
+            System.out.println("Resetting...");
+            relay.set(Value.kOff);
             barrelMotor.set(.25);
         }
         

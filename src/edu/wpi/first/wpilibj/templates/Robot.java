@@ -98,13 +98,13 @@ public class Robot extends IterativeRobot {
         
         Drive.drive(-leftStickYAxis, leftStickXAxis);
         elevationMotor.set(rightStickYAxis);
-        Launcher.timedActions();
         
         if(leftTrigger & rightTrigger)
         {
             //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire();
         }
+        Launcher.timedActions();
         
     }
     
