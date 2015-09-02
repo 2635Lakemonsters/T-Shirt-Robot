@@ -77,7 +77,7 @@ public class Launcher
     
     public void timedActions()
     {
-        if(timer.getTick() > 1)
+        if(timer.getTick() > 0)
         {
             //Timer initialized, ticking...
             timer.tick();
