@@ -40,8 +40,7 @@ public class Robot extends IterativeRobot {
     
     final int id_LEFTSTICKXAXIS = 1;
     final int id_LEFTSTICKYAXIS = 2;
-    final int id_RIGHTSTICKYAXIS = 5;
-    //REPLACE VALUES BELOW
+    final int id_RIGHTSTICKYAXIS = 6;
     final int id_LEFTTRIGGER = 5;
     final int id_RIGHTTRIGGER = 6;
     
@@ -102,7 +101,7 @@ public class Robot extends IterativeRobot {
         if(leftTrigger & rightTrigger)
         {
             //System.out.println("Joystick fire command, attempting to fire...");
-            Launcher.fire();
+            Launcher.fire(false);
         }
         Launcher.timedActions();
         

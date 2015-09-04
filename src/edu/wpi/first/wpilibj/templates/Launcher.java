@@ -35,9 +35,9 @@ public class Launcher
         
     }
     
-    public void fire()
+    public void fire(boolean im_override)
     {
-        if(checkYourPrivilege())
+        if(checkYourPrivilege()|| im_override)
         {
            //Firing code here
            System.out.println("Firing...");
