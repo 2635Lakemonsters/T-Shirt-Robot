@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
@@ -50,6 +51,8 @@ public class Robot extends IterativeRobot
     final int id_SOLENOID = 1;
     final int id_TRAINHORN = 2;
     final int id_KLAXON = 3;
+    
+    final int id_TRIGGER = 1;
 
     //DEVICE DECLARATIONS
     Talon leftMotor1;
@@ -62,6 +65,8 @@ public class Robot extends IterativeRobot
     Relay solenoid;
     Relay trainHorn;
     Relay klaxon;
+    
+    DigitalInput trigger;
 
     Joystick joystick;
     ArcadeDrive Drive;
@@ -79,6 +84,8 @@ public class Robot extends IterativeRobot
         solenoid = new Relay(id_SOLENOID);
         trainHorn = new Relay(id_TRAINHORN);
         klaxon = new Relay(id_KLAXON);
+        
+        trigger = new DigitalInput(id_TRIGGER);
 
         joystick = new Joystick(id_JOYSTICK);
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
@@ -88,9 +95,9 @@ public class Robot extends IterativeRobot
     /**
      * This function is called periodically during autonomous
      */
-    public void autonomousPeriodic()
+    public void teleopInit()
     {
-
+        System.out.println("[RobOS] Teleop enabled.");
     }
 
     /**
@@ -103,11 +110,12 @@ public class Robot extends IterativeRobot
         double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
         boolean leftTrigger = joystick.getRawButton(id_LEFTTRIGGER);
         boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
+        boolean triggered = trigger.get();
 
         Drive.drive(-leftStickYAxis, leftStickXAxis);
         elevationMotor.set(-rightStickYAxis);
 
-        if (leftTrigger & rightTrigger)
+        if (leftTrigger & rightTrigger || triggered)
         {
             //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire(false);
