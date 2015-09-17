@@ -12,16 +12,17 @@ import edu.wpi.first.wpilibj.SpeedController;
  *
  * @author localuser
  */
-public class ArcadeDrive extends RobotDrive 
+public class ArcadeDrive extends RobotDrive
 {
+
     /**
      *
      */
     public ArcadeDrive(SpeedController leftMotor1, SpeedController leftMotor2, SpeedController rightMotor1, SpeedController rightMotor2)
     {
-        super(leftMotor1, leftMotor2, rightMotor1, rightMotor2);      
+        super(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
     }
-    
+
     public void drive(double yAxis, double rotation)
     {
         arcadeDrive(yAxis, rotation);
