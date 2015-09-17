@@ -38,10 +38,17 @@ public class Launcher
         override = overrideLogic;
 
     }
+<<<<<<< HEAD
 
     public void fire(boolean im_override)
     {
         if (checkYourPrivilege() || im_override)
+=======
+    
+    public void fire(boolean im_override)
+    {
+        if(checkYourPrivilege()|| im_override)
+>>>>>>> 0b43445e470ca4e7eb246545d9e27ad3c3232988
         {
             //Firing code here
             System.out.println("Firing...");
@@ -81,7 +88,11 @@ public class Launcher
 
     public void timedActions()
     {
+<<<<<<< HEAD
         if (timer.getTick() > 0)
+=======
+        if(timer.getTick() > 0)
+>>>>>>> 0b43445e470ca4e7eb246545d9e27ad3c3232988
         {
             //Timer initialized, ticking...
             timer.tick();
