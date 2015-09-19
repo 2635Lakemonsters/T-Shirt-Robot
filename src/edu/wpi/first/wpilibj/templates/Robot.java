@@ -115,7 +115,7 @@ public class Robot extends IterativeRobot
         Drive.drive(-leftStickYAxis, leftStickXAxis);
         elevationMotor.set(-rightStickYAxis);
 
-        if (leftTrigger & rightTrigger || triggered)
+        if (leftTrigger & rightTrigger || !triggered)
         {
             //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire(false);
@@ -128,7 +128,7 @@ public class Robot extends IterativeRobot
         }
         else
         {
-            klaxon.set(Value.kReverse);
+            klaxon.set(Value.kOff);
         }
 
         if (joystick.getRawButton(id_TRAINHORNBUTTON))
@@ -137,7 +137,7 @@ public class Robot extends IterativeRobot
         }
         else
         {
-            trainHorn.set(Value.kReverse);
+            trainHorn.set(Value.kOff);
         }
 
     }

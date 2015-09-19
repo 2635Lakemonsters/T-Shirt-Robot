@@ -85,7 +85,7 @@ public class Launcher
             //Timer initialized, ticking...
             timer.tick();
             currentTick = timer.getTick();
-            System.out.println(currentTick);
+            //System.out.println(currentTick);
         }
 
         if (currentTick == 5)
