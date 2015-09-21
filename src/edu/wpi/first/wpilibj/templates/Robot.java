@@ -7,8 +7,10 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.Talon;
@@ -61,6 +63,11 @@ public class Robot extends IterativeRobot
     Talon rightMotor2;
     Talon barrelMotor;
     Talon elevationMotor;
+    
+    Encoder rotationEncoder;
+    Encoder liftEncoder;
+    PIDController liftPID;
+    PIDController rotationPID;
 
     Relay solenoid;
     Relay trainHorn;
@@ -80,6 +87,12 @@ public class Robot extends IterativeRobot
         rightMotor2 = new Talon(id_RIGHTMOTOR2);
         barrelMotor = new Talon(id_BARRELMOTOR);
         elevationMotor = new Talon(id_ELEVATIONMOTOR);
+        
+        rotationEncoder = new Encoder(1, 2);
+        liftEncoder = new Encoder(3, 4);
+        liftPID = new PIDController(.1, .1, .1, liftEncoder, elevationMotor);
+        rotationPID = new PIDController(.1, .1, .1, rotationEncoder, barrelMotor);
+
 
         solenoid = new Relay(id_SOLENOID);
         trainHorn = new Relay(id_TRAINHORN);
@@ -97,6 +110,8 @@ public class Robot extends IterativeRobot
      */
     public void teleopInit()
     {
+        liftPID.enable();
+        rotationPID.enable();
         System.out.println("[RobOS] Teleop enabled.");
     }
 
@@ -113,7 +128,7 @@ public class Robot extends IterativeRobot
         boolean triggered = trigger.get();
 
         Drive.drive(-leftStickYAxis, leftStickXAxis);
-        elevationMotor.set(-rightStickYAxis);
+        liftPID.setSetpoint(-rightStickYAxis);
 
         if (leftTrigger & rightTrigger || !triggered)
         {
