@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay;
@@ -47,6 +48,8 @@ public class Robot extends IterativeRobot
     final int id_RIGHTTRIGGER = 6;
     final int id_KLAXONBUTTON = 1;
     final int id_TRAINHORNBUTTON = 4;
+    
+    final int id_LIGHTS = 4;
 
     final int id_SOLENOID = 1;
     final int id_TRAINHORN = 2;
@@ -67,6 +70,7 @@ public class Robot extends IterativeRobot
     Relay klaxon;
     
     DigitalInput trigger;
+    Relay lightStrip;
 
     Joystick joystick;
     ArcadeDrive Drive;
@@ -86,6 +90,7 @@ public class Robot extends IterativeRobot
         klaxon = new Relay(id_KLAXON);
         
         trigger = new DigitalInput(id_TRIGGER);
+        lightStrip = new Relay(id_LIGHTS);
 
         joystick = new Joystick(id_JOYSTICK);
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
@@ -122,6 +127,15 @@ public class Robot extends IterativeRobot
         }
         Launcher.timedActions();
 
+        if(leftTrigger || rightTrigger)
+        {
+            lightStrip.set(Value.kForward);
+        }
+        else
+        {
+            lightStrip.set(Value.kReverse);
+        }
+        
         if (joystick.getRawButton(id_KLAXONBUTTON))
         {
             klaxon.set(Value.kForward);
