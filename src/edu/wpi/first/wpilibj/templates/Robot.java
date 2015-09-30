@@ -50,6 +50,8 @@ public class Robot extends IterativeRobot
     final int id_RIGHTTRIGGER = 6;
     final int id_KLAXONBUTTON = 1;
     final int id_TRAINHORNBUTTON = 4;
+    final int id_RAISEDELAY = 2;
+    final int id_LOWERDELAY = 3;
     
     final int id_LIGHTS = 4;
 
@@ -170,6 +172,17 @@ public class Robot extends IterativeRobot
         else
         {
             trainHorn.set(Value.kOff);
+        }
+        
+        //Changes relay delay if button is pressed
+        if(joystick.getRawButton(id_RAISEDELAY))
+        {
+            Launcher.raiseDelay();
+        }
+        
+        if(joystick.getRawButton(id_LOWERDELAY))
+        {
+            Launcher.lowerDelay();
         }
 
     }

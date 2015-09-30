@@ -23,6 +23,7 @@ public class Launcher
     private final Timer timer;
     private final boolean override;
     public int currentTick = 0;
+    private int relayDelay = 5;
 
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
@@ -80,6 +81,12 @@ public class Launcher
 
     public void timedActions()
     {
+        /**
+         * TODO:
+         * Implement variable delay system
+         */
+       
+        
         if(timer.getTick() == 1)
         {
             //First tick triggered by firing method, not ticking to avoid skipping second step
@@ -93,7 +100,7 @@ public class Launcher
             //System.out.println(currentTick);
         }
 
-        if (currentTick == 5)
+        if (currentTick == relayDelay)
         {
             System.out.println("Resetting...");
             relay.set(Value.kOff);
@@ -116,6 +123,18 @@ public class Launcher
         }
 
         //Implement other timed stuff here
+    }
+    
+    public void raiseDelay()
+    {
+        ++relayDelay;
+        System.out.println("[RobOS] Relay Delay: " + relayDelay);
+    }
+    
+    public void lowerDelay()
+    {
+        --relayDelay;
+        System.out.println("[RobOS] Relay Delay: " + relayDelay);
     }
 
 }
