@@ -7,11 +7,8 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj.DigitalOutput;
-=======
 import edu.wpi.first.wpilibj.Encoder;
->>>>>>> 87b5978f04ab1ea056d3c5898b5f168b38e17288
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
@@ -138,13 +135,14 @@ public class Robot extends IterativeRobot
         Drive.drive(-leftStickYAxis, leftStickXAxis);
         liftPID.setSetpoint(-rightStickYAxis);
 
-        if (leftTrigger & rightTrigger || !triggered)
+        if (leftTrigger & rightTrigger || !triggered) //Digital input is normally closed, inverted variable
         {
             //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire(false);
         }
         Launcher.timedActions();
 
+        //Light Strip activiation; based on either trigger being pressed
         if(leftTrigger || rightTrigger)
         {
             lightStrip.set(Value.kForward);
@@ -154,6 +152,7 @@ public class Robot extends IterativeRobot
             lightStrip.set(Value.kReverse);
         }
         
+        //Klaxon activation; based on pressing controller button
         if (joystick.getRawButton(id_KLAXONBUTTON))
         {
             klaxon.set(Value.kForward);
@@ -163,6 +162,7 @@ public class Robot extends IterativeRobot
             klaxon.set(Value.kOff);
         }
 
+        //Train Horn activation; based on pressing controller button
         if (joystick.getRawButton(id_TRAINHORNBUTTON))
         {
             trainHorn.set(Value.kForward);

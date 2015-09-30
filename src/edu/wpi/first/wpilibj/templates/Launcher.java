@@ -80,9 +80,14 @@ public class Launcher
 
     public void timedActions()
     {
-        if(timer.getTick() > 0)
+        if(timer.getTick() == 1)
         {
-            //Timer initialized, ticking...
+            //First tick triggered by firing method, not ticking to avoid skipping second step
+            currentTick = timer.getTick();
+        }
+        if(timer.getTick() > 1)
+        {
+            //Normal ticking
             timer.tick();
             currentTick = timer.getTick();
             //System.out.println(currentTick);
@@ -102,6 +107,12 @@ public class Launcher
 
             //Last Command, resetting timer
             timer.reset();
+        }
+        
+        if (currentTick == 1)
+        {
+            //Special case tick, just don't ask
+            timer.tick();
         }
 
         //Implement other timed stuff here
