@@ -44,7 +44,7 @@ public class Launcher
         if(checkYourPrivilege()|| im_override)
         {
             //Firing code here
-            System.out.println("Firing...");
+            //System.out.println("Firing...");
             relay.set(Value.kForward);
             timer.tick();
         }
@@ -102,7 +102,7 @@ public class Launcher
 
         if (currentTick == relayDelay)
         {
-            System.out.println("Resetting...");
+            //System.out.println("Resetting...");
             relay.set(Value.kOff);
             barrelMotor.set(.25);
         }
