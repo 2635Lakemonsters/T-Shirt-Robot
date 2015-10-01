@@ -50,8 +50,8 @@ public class Robot extends IterativeRobot
     final int id_RIGHTTRIGGER = 6;
     final int id_KLAXONBUTTON = 1;
     final int id_TRAINHORNBUTTON = 4;
-    final int id_RAISEDELAY = 2;
-    final int id_LOWERDELAY = 3;
+    final int id_RAISEDELAYBUTTON = 2;
+    final int id_LOWERDELAYBUTTON = 3;
     
     final int id_LIGHTS = 4;
 
@@ -94,8 +94,8 @@ public class Robot extends IterativeRobot
         barrelMotor = new Talon(id_BARRELMOTOR);
         elevationMotor = new Talon(id_ELEVATIONMOTOR);
         
-        rotationEncoder = new Encoder(1, 2);
-        liftEncoder = new Encoder(3, 4);
+        rotationEncoder = new Encoder(7, 8);
+        liftEncoder = new Encoder(9, 10);
         liftPID = new PIDController(.1, .1, .1, liftEncoder, elevationMotor);
         rotationPID = new PIDController(.1, .1, .1, rotationEncoder, barrelMotor);
 
@@ -175,12 +175,12 @@ public class Robot extends IterativeRobot
         }
         
         //Changes relay delay if button is pressed
-        if(joystick.getRawButton(id_RAISEDELAY))
+        if(joystick.getRawButton(id_RAISEDELAYBUTTON))
         {
             Launcher.raiseDelay();
         }
         
-        if(joystick.getRawButton(id_LOWERDELAY))
+        if(joystick.getRawButton(id_LOWERDELAYBUTTON))
         {
             Launcher.lowerDelay();
         }
