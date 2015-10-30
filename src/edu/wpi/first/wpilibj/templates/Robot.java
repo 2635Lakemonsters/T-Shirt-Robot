@@ -109,7 +109,7 @@ public class Robot extends IterativeRobot
 
         joystick = new Joystick(id_JOYSTICK);
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
-        Launcher = new Launcher(barrelMotor, solenoid, false);
+        Launcher = new Launcher(barrelMotor, solenoid, false, rotationPID);
     }
 
     /**
@@ -120,6 +120,11 @@ public class Robot extends IterativeRobot
         liftPID.enable();
         rotationPID.enable();
         System.out.println("[RobOS] Teleop enabled.");
+    }
+    
+    public void autonomousPeriodic()
+    {
+        System.out.println("[RobOS] Autonomous mode is enabled, Robot won't work!");
     }
 
     /**
@@ -135,7 +140,8 @@ public class Robot extends IterativeRobot
         boolean triggered = trigger.get();
 
         Drive.drive(-leftStickYAxis, leftStickXAxis);
-        liftPID.setSetpoint(-rightStickYAxis);
+        liftPID.setSetpoint(liftPID.getSetpoint() + -rightStickYAxis * 5
+        );
 
         if (leftTrigger & rightTrigger || !triggered) //Digital input is normally closed, inverted variable
         {

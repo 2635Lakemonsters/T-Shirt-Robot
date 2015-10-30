@@ -5,6 +5,7 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -22,8 +23,11 @@ public class Launcher
     private final SpeedController barrelMotor;
     private final Timer timer;
     private final boolean override;
+    private final PIDController rotator;
     public int currentTick = 0;
     private int relayDelay = 5;
+    public int[] setPointValues;
+    public int barrelPosition = 0;
 
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
@@ -31,12 +35,21 @@ public class Launcher
      * @param overrideLogic PASS THIS FALSE UNLESS YOU LIKE THINGS KILLING
      * PEOPLE.
      */
-    public Launcher(SpeedController rotateMotor, Relay solenoid, boolean overrideLogic)
+    public Launcher(SpeedController rotateMotor, Relay solenoid, boolean overrideLogic, PIDController barrelEncoder)
     {
         relay = solenoid;
         timer = new Timer();
         barrelMotor = rotateMotor;
         override = overrideLogic;
+        rotator = barrelEncoder;
+        
+        setPointValues = new int[6];
+        setPointValues[0] = 60;
+        setPointValues[1] = 120;
+        setPointValues[2] = 180;
+        setPointValues[3] = 240;
+        setPointValues[4] = 300;
+        setPointValues[5] = 360;
 
     }
     public void fire(boolean im_override)
@@ -104,13 +117,17 @@ public class Launcher
         {
             //System.out.println("Resetting...");
             relay.set(Value.kOff);
-            barrelMotor.set(.25);
+            rotator.setSetpoint(setPointValues[barrelPosition]);
+            ++barrelPosition;
         }
 
         if (currentTick == 53)
         {
             //1000ms later, stopping rotation motor
-            barrelMotor.set(0);
+            if(barrelPosition == 5)
+            {
+                barrelPosition = 0;
+            }
 
             //Last Command, resetting timer
             timer.reset();
