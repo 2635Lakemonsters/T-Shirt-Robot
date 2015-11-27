@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -60,6 +61,12 @@ public class Robot extends IterativeRobot
     final int id_KLAXON = 3;
     
     final int id_TRIGGER = 1;
+    
+    final int id_LIFTENCODER1 = 9;
+    final int id_LIFTENCODER2 = 10;
+    
+    final int id_ROTATIONENCODER1 = 7;
+    final int id_ROTATIONENCODER2 = 8;
 
     //DEVICE DECLARATIONS
     Talon leftMotor1;
@@ -70,7 +77,7 @@ public class Robot extends IterativeRobot
     Talon elevationMotor;
     
     Encoder rotationEncoder;
-    Encoder liftEncoder;
+    AnalogChannel liftEncoder;
     PIDController liftPID;
     PIDController rotationPID;
 
@@ -84,6 +91,7 @@ public class Robot extends IterativeRobot
     Joystick joystick;
     ArcadeDrive Drive;
     Launcher Launcher;
+    StateTracker Tracker;
 
     public void robotInit()
     {
@@ -94,8 +102,8 @@ public class Robot extends IterativeRobot
         barrelMotor = new Talon(id_BARRELMOTOR);
         elevationMotor = new Talon(id_ELEVATIONMOTOR);
         
-        rotationEncoder = new Encoder(7, 8);
-        liftEncoder = new Encoder(9, 10);
+        rotationEncoder = new Encoder(id_ROTATIONENCODER1, id_ROTATIONENCODER2);
+        //liftEncoder = new Encoder(id_LIFTENCODER1, id_LIFTENCODER2);
         liftPID = new PIDController(.1, .1, .1, liftEncoder, elevationMotor);
         rotationPID = new PIDController(.1, .1, .1, rotationEncoder, barrelMotor);
 
@@ -110,6 +118,7 @@ public class Robot extends IterativeRobot
         joystick = new Joystick(id_JOYSTICK);
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
         Launcher = new Launcher(barrelMotor, solenoid, false, rotationPID);
+        Tracker = new StateTracker();
     }
 
     /**
@@ -117,7 +126,7 @@ public class Robot extends IterativeRobot
      */
     public void teleopInit()
     {
-        liftPID.enable();
+        //liftPID.enable();
         rotationPID.enable();
         System.out.println("[RobOS] Teleop enabled.");
     }
@@ -139,9 +148,18 @@ public class Robot extends IterativeRobot
         boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
         boolean triggered = trigger.get();
 
-        Drive.drive(-leftStickYAxis, leftStickXAxis);
-        liftPID.setSetpoint(liftPID.getSetpoint() + -rightStickYAxis * 5
-        );
+        Drive.drive(-leftStickYAxis, -leftStickXAxis);
+        
+        //If joystick has just changed to zero, set the PID setpoint and enable the loop
+        if(Tracker.checkState(rightStickYAxis))
+        {
+            liftPID.setSetpoint(liftEncoder.getValue());
+            liftPID.enable();
+        }
+        else
+        {
+            liftPID.disable();
+        }
 
         if (leftTrigger & rightTrigger || !triggered) //Digital input is normally closed, inverted variable
         {

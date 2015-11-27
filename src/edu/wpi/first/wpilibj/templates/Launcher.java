@@ -32,8 +32,8 @@ public class Launcher
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
      * @param solenoid Pass the variable containing the firing solenoid
-     * @param overrideLogic PASS THIS FALSE UNLESS YOU LIKE THINGS KILLING
-     * PEOPLE.
+     * @param overrideLogic PASS THIS FALSE UNLESS YOU LIKE THINGS KILLING PEOPLE
+     * @param barrelEncoder Encoder PID Loop for barrel rotation   
      */
     public Launcher(SpeedController rotateMotor, Relay solenoid, boolean overrideLogic, PIDController barrelEncoder)
     {
@@ -44,12 +44,12 @@ public class Launcher
         rotator = barrelEncoder;
         
         setPointValues = new int[6];
-        setPointValues[0] = 60;
-        setPointValues[1] = 120;
-        setPointValues[2] = 180;
-        setPointValues[3] = 240;
-        setPointValues[4] = 300;
-        setPointValues[5] = 360;
+        setPointValues[0] = 0;
+        setPointValues[1] = 60;
+        setPointValues[2] = 120;
+        setPointValues[3] = 180;
+        setPointValues[4] = 240;
+        setPointValues[5] = 300;
 
     }
     public void fire(boolean im_override)
