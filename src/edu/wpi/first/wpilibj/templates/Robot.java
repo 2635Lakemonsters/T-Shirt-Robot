@@ -39,8 +39,8 @@ public class Robot extends IterativeRobot
     final int id_RIGHTMOTOR1 = 3;
     final int id_RIGHTMOTOR2 = 4;
 
-    final int id_ELEVATIONMOTOR = 5;
-    final int id_BARRELMOTOR = 6;
+    final int id_ELEVATIONMOTOR = 6;
+    final int id_BARRELMOTOR = 5;
 
     final int id_JOYSTICK = 1;
 
@@ -60,7 +60,8 @@ public class Robot extends IterativeRobot
     final int id_TRAINHORN = 2;
     final int id_KLAXON = 3;
     
-    final int id_TRIGGER = 1;
+    final int id_LIFTUPPERLIMIT = 2;
+    final int id_LIFTLOWERLIMIT = 1;
     
     final int id_LIFTENCODER1 = 9;
     final int id_LIFTENCODER2 = 10;
@@ -86,12 +87,16 @@ public class Robot extends IterativeRobot
     Relay klaxon;
     
     DigitalInput trigger;
+    DigitalInput liftUpperLimit;
+    DigitalInput liftLowerLimit;
     Relay lightStrip;
 
     Joystick joystick;
     ArcadeDrive Drive;
     Launcher Launcher;
     StateTracker Tracker;
+    
+    boolean liftPIDEnabled = false;
 
     public void robotInit()
     {
@@ -103,7 +108,7 @@ public class Robot extends IterativeRobot
         elevationMotor = new Talon(id_ELEVATIONMOTOR);
         
         rotationEncoder = new Encoder(id_ROTATIONENCODER1, id_ROTATIONENCODER2);
-        //liftEncoder = new Encoder(id_LIFTENCODER1, id_LIFTENCODER2);
+        liftEncoder = new AnalogChannel(1);
         liftPID = new PIDController(.1, .1, .1, liftEncoder, elevationMotor);
         rotationPID = new PIDController(.1, .1, .1, rotationEncoder, barrelMotor);
 
@@ -112,7 +117,8 @@ public class Robot extends IterativeRobot
         trainHorn = new Relay(id_TRAINHORN);
         klaxon = new Relay(id_KLAXON);
         
-        trigger = new DigitalInput(id_TRIGGER);
+        liftUpperLimit = new DigitalInput(id_LIFTUPPERLIMIT);
+        liftLowerLimit = new DigitalInput(id_LIFTLOWERLIMIT);
         lightStrip = new Relay(id_LIGHTS);
 
         joystick = new Joystick(id_JOYSTICK);
@@ -143,25 +149,48 @@ public class Robot extends IterativeRobot
     {
         double leftStickXAxis = joystick.getRawAxis(id_LEFTSTICKXAXIS);
         double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
-        double rightStickYAxis = joystick.getRawAxis(id_RIGHTSTICKYAXIS);
+        double rightStickYAxis = -joystick.getRawAxis(id_RIGHTSTICKYAXIS)/3;
         boolean leftTrigger = joystick.getRawButton(id_LEFTTRIGGER);
         boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
-        boolean triggered = trigger.get();
+        boolean liftLowerLimitBool = !liftLowerLimit.get();
+        boolean liftUpperLimitBool = !liftUpperLimit.get();
 
         Drive.drive(-leftStickYAxis, -leftStickXAxis);
+        //System.out.println(liftLowerLimit.get());
         
-        //If joystick has just changed to zero, set the PID setpoint and enable the loop
-        if(Tracker.checkState(rightStickYAxis))
+        /**
+        if(liftPIDEnabled && (rightStickYAxis != 0 || liftUpperLimitBool || liftLowerLimitBool))
+        {
+            liftPID.disable();
+            liftPIDEnabled = false;
+        }
+        
+//        if(!liftPIDEnabled && rightStickYAxis == 0 /* && !liftUpperLimitBool && !liftLowerLimitBool)
         {
             liftPID.setSetpoint(liftEncoder.getValue());
             liftPID.enable();
+            liftPIDEnabled = true;
         }
-        else
+        **/
+        
+        if(rightStickYAxis < 0)
         {
-            liftPID.disable();
+            if(!liftLowerLimitBool)
+            //OK to move down, setting value...
+                elevationMotor.set(rightStickYAxis);
+            else
+                elevationMotor.set(0);
+        }
+        else if(rightStickYAxis > 0)
+        {
+            if(!liftUpperLimitBool )
+            //OK to move up, setting value...
+                elevationMotor.set(rightStickYAxis);
+            else
+                elevationMotor.set(0);
         }
 
-        if (leftTrigger & rightTrigger || !triggered) //Digital input is normally closed, inverted variable
+        if (leftTrigger && rightTrigger) //Digital input is normally closed, inverted variable
         {
             //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire(false);
