@@ -20,14 +20,15 @@ public class Launcher
 {
 
     private final Relay relay;
-    private final SpeedController barrelMotor;
+    //private final SpeedController barrelMotor;
     private final Timer timer;
     private final boolean override;
     private final PIDController rotator;
     public int currentTick = 0;
     private int relayDelay = 5;
-    public int[] setPointValues;
-    public int barrelPosition = 0;
+    
+    //TODO: Calibrate
+    public double deviation = .023;
 
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
@@ -39,18 +40,10 @@ public class Launcher
     {
         relay = solenoid;
         timer = new Timer();
-        barrelMotor = rotateMotor;
+        //barrelMotor = rotateMotor;
         override = overrideLogic;
         rotator = barrelEncoder;
-        
-        //TODO: Fix encoder logic, because it's not measured in angles
-        setPointValues = new int[6];
-        setPointValues[0] = 0;
-        setPointValues[1] = 60;
-        setPointValues[2] = 120;
-        setPointValues[3] = 180;
-        setPointValues[4] = 240;
-        setPointValues[5] = 300;
+         
 
     }
     public void fire(boolean m_override)
@@ -117,18 +110,12 @@ public class Launcher
         {
             //System.out.println("Resetting...");
             relay.set(Value.kOff);
-            rotator.setSetpoint(setPointValues[barrelPosition]);
-            ++barrelPosition;
+            double current = rotator.get();
+            rotator.setSetpoint(current + deviation);
         }
 
         if (currentTick == 53)
         {
-            //1000ms later, stopping rotation motor
-            if(barrelPosition == 5)
-            {
-                barrelPosition = 0;
-            }
-
             //Last Command, resetting timer
             timer.reset();
         }
@@ -153,5 +140,4 @@ public class Launcher
         --relayDelay;
         System.out.println("[RobOS] Relay Delay: " + relayDelay);
     }
-
 }
