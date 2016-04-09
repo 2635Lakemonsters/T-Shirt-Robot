@@ -43,6 +43,7 @@ public class Launcher
         override = overrideLogic;
         rotator = barrelEncoder;
         
+        //TODO: Fix encoder logic, because it's not measured in angles
         setPointValues = new int[6];
         setPointValues[0] = 0;
         setPointValues[1] = 60;
@@ -52,9 +53,9 @@ public class Launcher
         setPointValues[5] = 300;
 
     }
-    public void fire(boolean im_override)
+    public void fire(boolean m_override)
     {
-        if(checkYourPrivilege()|| im_override)
+        if(checkYourPrivilege()|| m_override)
         {
             //Firing code here
             //System.out.println("Firing...");
@@ -98,7 +99,6 @@ public class Launcher
          * TODO:
          * Implement variable delay system
          */
-       
         
         if(timer.getTick() == 1)
         {

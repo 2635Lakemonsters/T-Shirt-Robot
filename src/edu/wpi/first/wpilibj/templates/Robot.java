@@ -8,7 +8,6 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -44,6 +43,7 @@ public class Robot extends IterativeRobot
 
     final int id_JOYSTICK = 1;
 
+    //Joystick constants
     final int id_LEFTSTICKXAXIS = 1;
     final int id_LEFTSTICKYAXIS = 2;
     final int id_RIGHTSTICKYAXIS = 6;
@@ -54,14 +54,14 @@ public class Robot extends IterativeRobot
     final int id_RAISEDELAYBUTTON = 2;
     final int id_LOWERDELAYBUTTON = 3;
     
-    final int id_LIGHTS = 4;
+    final int id_WARNINGLIGHTS = 4;
 
     final int id_SOLENOID = 1;
     final int id_TRAINHORN = 2;
     final int id_KLAXON = 3;
     
-    final int id_LIFTUPPERLIMIT = 2;
-    final int id_LIFTLOWERLIMIT = 1;
+    final int id_LIFTUPPERLIMITSWITCH = 2;
+    final int id_LIFTLOWERLIMITSWITCH = 1;
     
     final int id_LIFTENCODER1 = 9;
     final int id_LIFTENCODER2 = 10;
@@ -86,10 +86,9 @@ public class Robot extends IterativeRobot
     Relay trainHorn;
     Relay klaxon;
     
-    DigitalInput trigger;
-    DigitalInput liftUpperLimit;
-    DigitalInput liftLowerLimit;
-    Relay lightStrip;
+    DigitalInput liftUpperLimitSwitch;
+    DigitalInput liftLowerLimitSwitch;
+    Relay warningLights;
 
     Joystick joystick;
     ArcadeDrive Drive;
@@ -117,9 +116,9 @@ public class Robot extends IterativeRobot
         trainHorn = new Relay(id_TRAINHORN);
         klaxon = new Relay(id_KLAXON);
         
-        liftUpperLimit = new DigitalInput(id_LIFTUPPERLIMIT);
-        liftLowerLimit = new DigitalInput(id_LIFTLOWERLIMIT);
-        lightStrip = new Relay(id_LIGHTS);
+        liftUpperLimitSwitch = new DigitalInput(id_LIFTUPPERLIMITSWITCH);
+        liftLowerLimitSwitch = new DigitalInput(id_LIFTLOWERLIMITSWITCH);
+        warningLights = new Relay(id_WARNINGLIGHTS);
 
         joystick = new Joystick(id_JOYSTICK);
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
@@ -139,7 +138,7 @@ public class Robot extends IterativeRobot
     
     public void autonomousPeriodic()
     {
-        System.out.println("[RobOS] Autonomous mode is enabled, Robot won't work!");
+        System.out.println("[RobOS] Autonomous mode. Robot will not function!");
     }
 
     /**
@@ -152,8 +151,8 @@ public class Robot extends IterativeRobot
         double rightStickYAxis = -joystick.getRawAxis(id_RIGHTSTICKYAXIS)/3;
         boolean leftTrigger = joystick.getRawButton(id_LEFTTRIGGER);
         boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
-        boolean liftLowerLimitBool = !liftLowerLimit.get();
-        boolean liftUpperLimitBool = !liftUpperLimit.get();
+        boolean liftLowerLimitBool = !liftLowerLimitSwitch.get();
+        boolean liftUpperLimitBool = !liftUpperLimitSwitch.get();
 
         Drive.drive(-leftStickYAxis, -leftStickXAxis);
         //System.out.println(liftLowerLimit.get());
@@ -190,7 +189,7 @@ public class Robot extends IterativeRobot
                 elevationMotor.set(0);
         }
 
-        if (leftTrigger && rightTrigger) //Digital input is normally closed, inverted variable
+        if (leftTrigger && rightTrigger) 
         {
             //System.out.println("Joystick fire command, attempting to fire...");
             Launcher.fire(false);
@@ -200,11 +199,11 @@ public class Robot extends IterativeRobot
         //Light Strip activiation; based on either trigger being pressed
         if(leftTrigger || rightTrigger)
         {
-            lightStrip.set(Value.kForward);
+            warningLights.set(Value.kForward); //Relays use Values instead of normal booleans. Nerds.
         }
         else
         {
-            lightStrip.set(Value.kReverse);
+            warningLights.set(Value.kReverse);
         }
         
         //Klaxon activation; based on pressing controller button
@@ -237,15 +236,5 @@ public class Robot extends IterativeRobot
         {
             Launcher.lowerDelay();
         }
-
     }
-
-    /**
-     * This function is called periodically during test mode
-     */
-    public void testPeriodic()
-    {
-
-    }
-
 }
