@@ -22,7 +22,6 @@ public class Launcher
     private final Relay relay;
     //private final SpeedController barrelMotor;
     private final Timer timer;
-    private final boolean override;
     private final PIDController rotator;
     public int currentTick = 0;
     private int relayDelay = 5;
@@ -33,19 +32,19 @@ public class Launcher
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
      * @param solenoid Pass the variable containing the firing solenoid
-     * @param overrideLogic PASS THIS FALSE UNLESS YOU LIKE THINGS KILLING PEOPLE
      * @param barrelEncoder Encoder PID Loop for barrel rotation   
      */
-    public Launcher(SpeedController rotateMotor, Relay solenoid, boolean overrideLogic, PIDController barrelEncoder)
+    public Launcher(SpeedController rotateMotor, Relay solenoid, PIDController barrelEncoder)
     {
         relay = solenoid;
         timer = new Timer();
         //barrelMotor = rotateMotor;
-        override = overrideLogic;
         rotator = barrelEncoder;
-         
-
     }
+    
+    /**
+     * @param m_override PASS THIS AS FALSE UNLESS YOU LIKE KILLING PEOPLE AND BREAKING THINGS. SERIOUSLY. NEVER PASS THIS AS TRUE.
+     */
     public void fire(boolean m_override)
     {
         if(checkYourPrivilege()|| m_override)
@@ -64,25 +63,17 @@ public class Launcher
     public boolean checkYourPrivilege()
     {
         boolean privileged;
-        if (override == true)
+        //TODO, add sensors. Maybe even use another class and method.
+        if (timer.getTick() < 1)
         {
-            privileged = true;
+         //Sensors OK, allowing firing
+                privileged = true;
         }
         else
         {
-            //TODO, add sensors. Maybe even use another class and method.
-            if (timer.getTick() < 1)
-            {
-                //Sensors OK, allowing firing
-                privileged = true;
-            }
-            else
-            {
-                //Sensors not clear, not allowing fire.
-                privileged = false;
-            }
-        }
-
+            //Sensors not clear, not allowing fire.
+            privileged = false;
+        }        
         return privileged;
     }
 

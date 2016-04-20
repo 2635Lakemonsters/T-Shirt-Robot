@@ -94,6 +94,7 @@ public class Robot extends IterativeRobot
     ArcadeDrive Drive;
     Launcher Launcher;
     StateTracker Tracker;
+    Bling Bling;
     
     boolean liftPIDEnabled = false;
 
@@ -122,8 +123,9 @@ public class Robot extends IterativeRobot
 
         joystick = new Joystick(id_JOYSTICK);
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
-        Launcher = new Launcher(barrelMotor, solenoid, false, rotationPID);
+        Launcher = new Launcher(barrelMotor, solenoid, rotationPID);
         Tracker = new StateTracker();
+        Bling = new Bling();
     }
 
     /**
@@ -155,7 +157,6 @@ public class Robot extends IterativeRobot
         boolean liftUpperLimitBool = !liftUpperLimitSwitch.get();
 
         Drive.drive(-leftStickYAxis, -leftStickXAxis);
-        //System.out.println(liftLowerLimit.get());
         
         /**
         if(liftPIDEnabled && (rightStickYAxis != 0 || liftUpperLimitBool || liftLowerLimitBool))
@@ -191,7 +192,7 @@ public class Robot extends IterativeRobot
 
         if (leftTrigger && rightTrigger) 
         {
-            //System.out.println("Joystick fire command, attempting to fire...");
+            //Joystick fire command
             Launcher.fire(false);
         }
         Launcher.timedActions();
@@ -199,11 +200,13 @@ public class Robot extends IterativeRobot
         //Light Strip activiation; based on either trigger being pressed
         if(leftTrigger || rightTrigger)
         {
-            warningLights.set(Value.kForward); //Relays use Values instead of normal booleans. Nerds.
+            //warningLights.set(Value.kForward); //Relays use Values instead of normal booleans. Nerds.
+            Bling.set(1);
         }
         else
         {
-            warningLights.set(Value.kReverse);
+            Bling.defaultScene();
+            //warningLights.set(Value.kReverse);
         }
         
         //Klaxon activation; based on pressing controller button
@@ -235,6 +238,17 @@ public class Robot extends IterativeRobot
         if(joystick.getRawButton(id_LOWERDELAYBUTTON))
         {
             Launcher.lowerDelay();
+        }
+        
+        //Get angle from D-pad, set bling
+        switch((int)joystick.getDirectionDegrees())
+        {
+            case(0):
+                Bling.set(0);
+                break;
+            case(90):
+                Bling.set(2);
+                break;
         }
     }
     /**
