@@ -13,7 +13,7 @@ public class Bling
     //ID's to send to arduino for each lighting scene. Used for reference
     public static final int rainbowFade = 0,
                             firing = 1,
-                            blueFade = 2;
+                            marchRWB = 2;
     private I2C chat;
     private int previousScene = 0;
     private int currentScene = 0;

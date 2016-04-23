@@ -135,6 +135,7 @@ public class Robot extends IterativeRobot
     {
         //liftPID.enable();
         rotationPID.enable();
+        Bling.set(0);
         System.out.println("[RobOS] Teleop enabled.");
     }
     
