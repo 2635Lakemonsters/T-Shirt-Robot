@@ -17,7 +17,7 @@ void setup()
 {
   strip.begin();
   strip.show();
-  Wire.being(4);
+  Wire.begin(4);
   Wire.onReceive(receiveEvent);
 }
 
@@ -26,13 +26,13 @@ uint32_t colorRed = strip.Color(255,0,0);
 
 void loop() 
 {
-  showPattern = 0;
+  //showPattern = 0;
   switch(showPattern)
   {
    case 0: rainbowCycle(5); showPattern = -1; break;
    case 1: colorWipe(colorRed, 10); showPattern = -1; break;
    case 2: marchRedWhiteBlue(); showPattern = -1; break;
-  default:    solidColor(strip.Color(0, 0, 0));
+   default:    solidColor(strip.Color(0, 0, 0));
   strip.show(); showPattern = -1; break;
   }
 

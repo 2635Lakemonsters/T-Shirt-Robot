@@ -21,8 +21,10 @@ public class Bling
     
     public Bling()
     {
+        
         DigitalModule digiMod = DigitalModule.getInstance(1);
         chat = digiMod.getI2C(8);
+        
         
         chat.setCompatabilityMode(true);
     }
@@ -31,12 +33,14 @@ public class Bling
     {
         previousScene = currentScene;
         currentScene = scene;
-        
+        System.out.println("Setting scene to " + scene);
         byte[] msg = { 0 };
         msg[0] = (byte)scene;
+        //System.out.println("Message: " + msg);
         byte[] resp = new byte[100];
 
         chat.transaction(msg, 1, resp, 0);
+        chat.write(4, scene);
     }
     
     public void revert()

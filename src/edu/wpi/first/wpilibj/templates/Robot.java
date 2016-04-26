@@ -139,6 +139,7 @@ public class Robot extends IterativeRobot
         rotationPID.enable();
         Bling.set(0);
         System.out.println("[RobOS] Teleop enabled.");
+        liftEncoder.start();
     }
     
     public void autonomousPeriodic()
@@ -164,6 +165,7 @@ public class Robot extends IterativeRobot
         
         double liftEncoderCounts = liftEncoder.getDistance();       
         System.out.println(liftEncoderCounts);
+        
 
         Drive.drive(-leftStickYAxis, -leftStickXAxis);
         
@@ -209,12 +211,14 @@ public class Robot extends IterativeRobot
         //Light Strip activiation; based on either trigger being pressed
         if(leftTrigger || rightTrigger)
         {
+            System.out.println("Bling!");
             //warningLights.set(Value.kForward); //Relays use Values instead of normal booleans. Nerds.
             Bling.set(1);
         }
         else
         {
             Bling.defaultScene();
+            //System.out.println("Default bling!");
             //warningLights.set(Value.kReverse);
         }
         
