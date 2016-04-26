@@ -8,6 +8,7 @@ package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -15,6 +16,7 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -63,8 +65,8 @@ public class Robot extends IterativeRobot
     final int id_LIFTUPPERLIMITSWITCH = 2;
     final int id_LIFTLOWERLIMITSWITCH = 1;
     
-    final int id_LIFTENCODER1 = 9;
-    final int id_LIFTENCODER2 = 10;
+    final int id_LIFTENCODER1 = 10;
+    final int id_LIFTENCODER2 = 9;
     
     final int id_ROTATIONENCODER1 = 7;
     final int id_ROTATIONENCODER2 = 8;
@@ -78,7 +80,7 @@ public class Robot extends IterativeRobot
     Talon elevationMotor;
     
     Encoder rotationEncoder;
-    AnalogChannel liftEncoder;
+    Encoder liftEncoder;
     PIDController liftPID;
     PIDController rotationPID;
 
@@ -108,7 +110,7 @@ public class Robot extends IterativeRobot
         elevationMotor = new Talon(id_ELEVATIONMOTOR);
         
         rotationEncoder = new Encoder(id_ROTATIONENCODER1, id_ROTATIONENCODER2);
-        liftEncoder = new AnalogChannel(1);
+        liftEncoder = new Encoder(id_LIFTENCODER1, id_LIFTENCODER2);
         liftPID = new PIDController(.1, .1, .1, liftEncoder, elevationMotor);
         rotationPID = new PIDController(.1, .1, .1, rotationEncoder, barrelMotor);
 
@@ -156,6 +158,12 @@ public class Robot extends IterativeRobot
         boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
         boolean liftLowerLimitBool = !liftLowerLimitSwitch.get();
         boolean liftUpperLimitBool = !liftUpperLimitSwitch.get();
+        
+        System.out.println(liftEncoder.getRaw());
+        
+        
+        double liftEncoderCounts = liftEncoder.getDistance();       
+        System.out.println(liftEncoderCounts);
 
         Drive.drive(-leftStickYAxis, -leftStickXAxis);
         
