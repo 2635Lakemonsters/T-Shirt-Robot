@@ -160,11 +160,11 @@ public class Robot extends IterativeRobot
         boolean liftLowerLimitBool = !liftLowerLimitSwitch.get();
         boolean liftUpperLimitBool = !liftUpperLimitSwitch.get();
         
-        System.out.println(liftEncoder.getRaw());
+        //System.out.println(liftEncoder.getRaw());
         
         
         double liftEncoderCounts = liftEncoder.getDistance();       
-        System.out.println(liftEncoderCounts);
+        //System.out.println(liftEncoderCounts);
         
 
         Drive.drive(-leftStickYAxis, -leftStickXAxis);
@@ -253,14 +253,15 @@ public class Robot extends IterativeRobot
             Launcher.lowerDelay();
         }
         
+        
         //Get angle from D-pad, set bling
         switch((int)joystick.getDirectionDegrees())
         {
             case(0):
-                Bling.set(0);
+                //Bling.set(0);
                 break;
             case(90):
-                Bling.set(2);
+                //Bling.set(2);
                 break;
         }
     }
