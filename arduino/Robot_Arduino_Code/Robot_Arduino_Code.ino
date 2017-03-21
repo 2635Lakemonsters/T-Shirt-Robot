@@ -17,7 +17,7 @@ void setup()
 {
   strip.begin();
   strip.show();
-  Wire.begin(84);
+  Wire.begin(4);
   Wire.onReceive(receiveEvent);
   pinMode(13, OUTPUT);
   Serial.begin(9600);
@@ -44,7 +44,7 @@ void loop()
 
   if (millis() - watchDog > 200)
   {
-    showPattern = -1;
+    //showPattern = -1;
   }
 
 }
@@ -128,7 +128,8 @@ void rainbowCycle(uint8_t wait) {
       return;
     }
 
-    for (i = 0; i < strip.numPixels(); i++) {
+    for (i = 0; i < strip.numPixels(); i++)
+    {
       strip.setPixelColor(i, Wheel(((i * 256 / strip.numPixels()) + j) & 255));
     }
     strip.show();
@@ -140,7 +141,8 @@ void rainbowCycle(uint8_t wait) {
 
 //UTIL METHODS. Call them if you want. See if I care.
 
-void solidColor(uint32_t c) {
+void solidColor(uint32_t c) 
+{
   for (uint16_t i = 0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
 
@@ -149,6 +151,7 @@ void solidColor(uint32_t c) {
 
 void receiveEvent(int howMany)
 {
+  Serial.println("Even received!");
   digitalWrite(13, HIGH);
   //static uint8_t ct = 0;
   int x = Wire.read();

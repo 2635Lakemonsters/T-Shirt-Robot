@@ -27,7 +27,7 @@ public class Launcher
     private int relayDelay = 5;
     
     //TODO: Calibrate
-    public double deviation = .023;
+    public double deviation = 94;
 
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor

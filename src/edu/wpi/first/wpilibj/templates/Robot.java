@@ -43,16 +43,18 @@ public class Robot extends IterativeRobot
     final int id_ELEVATIONMOTOR = 6;
     final int id_BARRELMOTOR = 5;
 
-    final int id_JOYSTICK = 1;
+    final int id_LJOYSTICK = 0;
+    final int id_RJOYSTICK = 1;
 
     //Joystick constants
     final int id_LEFTSTICKXAXIS = 1;
     final int id_LEFTSTICKYAXIS = 2;
-    final int id_RIGHTSTICKYAXIS = 6;
-    final int id_LEFTTRIGGER = 5;
-    final int id_RIGHTTRIGGER = 6;
-    final int id_KLAXONBUTTON = 1;
-    final int id_TRAINHORNBUTTON = 4;
+    final int id_RIGHTSTICKXAXIS = 1;
+    final int id_RIGHTSTICKYAXIS = 2;
+    final int id_LEFTTRIGGER = 1;
+    final int id_RIGHTTRIGGER = 1;
+    final int id_KLAXONBUTTON = 3;
+    final int id_TRAINHORNBUTTON = 2;
     final int id_RAISEDELAYBUTTON = 2;
     final int id_LOWERDELAYBUTTON = 3;
     
@@ -92,7 +94,8 @@ public class Robot extends IterativeRobot
     DigitalInput liftLowerLimitSwitch;
     Relay warningLights;
 
-    Joystick joystick;
+    Joystick lJoystick;
+    Joystick rJoystick;
     ArcadeDrive Drive;
     Launcher Launcher;
     StateTracker Tracker;
@@ -123,7 +126,9 @@ public class Robot extends IterativeRobot
         liftLowerLimitSwitch = new DigitalInput(id_LIFTLOWERLIMITSWITCH);
         warningLights = new Relay(id_WARNINGLIGHTS);
 
-        joystick = new Joystick(id_JOYSTICK);
+        lJoystick = new Joystick(1);
+        rJoystick = new Joystick(2);
+        
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
         Launcher = new Launcher(barrelMotor, solenoid, rotationPID);
         Tracker = new StateTracker();
@@ -152,22 +157,38 @@ public class Robot extends IterativeRobot
      */
     public void teleopPeriodic()
     {
-        double leftStickXAxis = joystick.getRawAxis(id_LEFTSTICKXAXIS);
-        double leftStickYAxis = joystick.getRawAxis(id_LEFTSTICKYAXIS);
-        double rightStickYAxis = -joystick.getRawAxis(id_RIGHTSTICKYAXIS)/3;
-        boolean leftTrigger = joystick.getRawButton(id_LEFTTRIGGER);
-        boolean rightTrigger = joystick.getRawButton(id_RIGHTTRIGGER);
+        double leftStickXAxis = lJoystick.getRawAxis(id_LEFTSTICKXAXIS);
+        double leftStickYAxis = lJoystick.getRawAxis(id_LEFTSTICKYAXIS);
+        double rightStickYAxis = rJoystick.getRawAxis(id_RIGHTSTICKYAXIS);
+        double rightStickXAxis = rJoystick.getRawAxis(id_RIGHTSTICKXAXIS);
+        boolean leftTrigger = lJoystick.getRawButton(id_LEFTTRIGGER);
+        boolean rightTrigger = rJoystick.getRawButton(id_RIGHTTRIGGER);
         boolean liftLowerLimitBool = !liftLowerLimitSwitch.get();
         boolean liftUpperLimitBool = !liftUpperLimitSwitch.get();
         
-        //System.out.println(liftEncoder.getRaw());
+        
+        //System.out.println(rJoystick.getRawButton(3));
+        
+        //System.out.println("RX " + rightStickXAxis);
+        
+        //System.out.println(maybelX);
+        
         
         
         double liftEncoderCounts = liftEncoder.getDistance();       
         //System.out.println(liftEncoderCounts);
         
 
-        Drive.drive(-leftStickYAxis, -leftStickXAxis);
+        //Drive.drive(-leftStickYAxis, -rightStickYAxis);
+        //double leftStickYAxis = lJoystick.getRawAxis(2);
+        //double rightStickYAxis = rJoystick.getRawAxis(2);
+        
+        leftMotor1.set(-leftStickYAxis);
+        leftMotor2.set(-leftStickYAxis);
+        rightMotor1.set(rightStickYAxis);
+        rightMotor2.set(rightStickYAxis);
+        barrelMotor.set(leftStickXAxis);
+
         
         /**
         if(liftPIDEnabled && (rightStickYAxis != 0 || liftUpperLimitBool || liftLowerLimitBool))
@@ -184,23 +205,26 @@ public class Robot extends IterativeRobot
         }
         **/
         
-        if(rightStickYAxis < 0)
+       
+        //Lift limit switch code
+        if(rightStickXAxis < 0)
         {
             if(!liftLowerLimitBool)
             //OK to move down, setting value...
-                elevationMotor.set(rightStickYAxis);
+                elevationMotor.set(rightStickXAxis);
             else
                 elevationMotor.set(0);
         }
-        else if(rightStickYAxis > 0)
+        else if(rightStickXAxis > 0)
         {
             if(!liftUpperLimitBool )
             //OK to move up, setting value...
-                elevationMotor.set(rightStickYAxis);
+                elevationMotor.set(rightStickXAxis);
             else
                 elevationMotor.set(0);
         }
 
+        //Fire control code
         if (leftTrigger && rightTrigger) 
         {
             //Joystick fire command
@@ -215,6 +239,10 @@ public class Robot extends IterativeRobot
             //warningLights.set(Value.kForward); //Relays use Values instead of normal booleans. Nerds.
             Bling.set(1);
         }
+            else if(lJoystick.getRawButton(6) || rJoystick.getRawButton(6))
+        {
+            Bling.set(2);
+        }
         else
         {
             Bling.defaultScene();
@@ -222,8 +250,11 @@ public class Robot extends IterativeRobot
             //warningLights.set(Value.kReverse);
         }
         
+        
+        
+        
         //Klaxon activation; based on pressing controller button
-        if (joystick.getRawButton(id_KLAXONBUTTON))
+        if (lJoystick.getRawButton(id_KLAXONBUTTON) || rJoystick.getRawButton(id_KLAXONBUTTON))
         {
             klaxon.set(Value.kForward);
         }
@@ -233,7 +264,7 @@ public class Robot extends IterativeRobot
         }
 
         //Train Horn activation; based on pressing controller button
-        if (joystick.getRawButton(id_TRAINHORNBUTTON))
+        if (lJoystick.getRawButton(id_TRAINHORNBUTTON) || rJoystick.getRawButton(id_TRAINHORNBUTTON))
         {
             trainHorn.set(Value.kForward);
         }
@@ -242,20 +273,24 @@ public class Robot extends IterativeRobot
             trainHorn.set(Value.kOff);
         }
         
-        //Changes relay delay if button is pressed
-        if(joystick.getRawButton(id_RAISEDELAYBUTTON))
-        {
-            Launcher.raiseDelay();
-        }
         
-        if(joystick.getRawButton(id_LOWERDELAYBUTTON))
+        //Changes relay delay if button is pressed
+       /** if(joystick.getRawButton(id_RAISEDELAYBUTTON))
         {
-            Launcher.lowerDelay();
+            barrelMotor.set(1);
+        }       
+        else if(joystick.getRawButton(id_LOWERDELAYBUTTON))
+        {
+            barrelMotor.set(-1);
         }
+        else
+        {
+            barrelMotor.set(0);
+        } **/
         
         
         //Get angle from D-pad, set bling
-        switch((int)joystick.getDirectionDegrees())
+        /**switch((int)joystick.getDirectionDegrees())
         {
             case(0):
                 //Bling.set(0);
@@ -263,7 +298,7 @@ public class Robot extends IterativeRobot
             case(90):
                 //Bling.set(2);
                 break;
-        }
+        } **/
     }
     /**
      * <Something Sexy>

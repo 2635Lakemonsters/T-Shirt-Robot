@@ -7,30 +7,41 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.Talon;
 
 /**
  *
  * @author localuser
  */
-public class ArcadeDrive extends RobotDrive
+public class ArcadeDrive
 {
+    Talon lMotor1;
+    Talon lMotor2;
+    Talon rMotor1;
+    Talon rMotor2;
 
     /**
      *
      */
-    public ArcadeDrive(SpeedController leftMotor1, SpeedController leftMotor2, SpeedController rightMotor1, SpeedController rightMotor2)
+    public ArcadeDrive(Talon leftMotor1, Talon leftMotor2, Talon rightMotor1, Talon rightMotor2)
     {
-        super(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
-        
+        //super(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
+        lMotor1 = leftMotor1;
+        lMotor2 = leftMotor2;
+        rMotor1 = rightMotor1;
+        rMotor2 = rightMotor2;
         /**
          * If problems continue, uncomment line below.
          */
         //setSafetyEnabled(false);
     }
 
-    public void drive(double yAxis, double rotation)
+    public void drive(double lJoystick, double rJoystick)
     {
-        arcadeDrive(yAxis, rotation);
+        lMotor1.set(lJoystick);
+        lMotor2.set(lJoystick);
+        rMotor1.set(rJoystick);
+        rMotor2.set(rJoystick);
     }
 }
