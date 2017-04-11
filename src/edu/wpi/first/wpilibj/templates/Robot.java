@@ -58,7 +58,8 @@ public class Robot extends IterativeRobot
     final int id_RAISEDELAYBUTTON = 2;
     final int id_LOWERDELAYBUTTON = 3;
     
-    final int id_WARNINGLIGHTS = 4;
+    //DEPRECATE
+    //final int id_WARNINGLIGHTS = 4;
 
     final int id_SOLENOID = 1;
     final int id_TRAINHORN = 2;
@@ -70,8 +71,18 @@ public class Robot extends IterativeRobot
     final int id_LIFTENCODER1 = 10;
     final int id_LIFTENCODER2 = 9;
     
-    final int id_ROTATIONENCODER1 = 7;
-    final int id_ROTATIONENCODER2 = 8;
+    final int id_ROTATIONENCODERA = 7; //Channel A, Yellow
+    final int id_ROTATIONENCODERB = 8; //Channel B, Green
+    
+    //PID Values
+    
+    final double RP = 0.01;
+    final double RI = 0;
+    final double RD = 0;
+    
+    final double LP = 0.3;
+    final double LI = 0;
+    final double LD = 0;
 
     //DEVICE DECLARATIONS
     Talon leftMotor1;
@@ -92,7 +103,9 @@ public class Robot extends IterativeRobot
     
     DigitalInput liftUpperLimitSwitch;
     DigitalInput liftLowerLimitSwitch;
-    Relay warningLights;
+    
+    //DEPRECATE
+    //Relay warningLights;
 
     Joystick lJoystick;
     Joystick rJoystick;
@@ -112,10 +125,10 @@ public class Robot extends IterativeRobot
         barrelMotor = new Talon(id_BARRELMOTOR);
         elevationMotor = new Talon(id_ELEVATIONMOTOR);
         
-        rotationEncoder = new Encoder(id_ROTATIONENCODER1, id_ROTATIONENCODER2);
+        rotationEncoder = new Encoder(id_ROTATIONENCODERA, id_ROTATIONENCODERB);
         liftEncoder = new Encoder(id_LIFTENCODER1, id_LIFTENCODER2);
-        liftPID = new PIDController(.1, .1, .1, liftEncoder, elevationMotor);
-        rotationPID = new PIDController(.1, .1, .1, rotationEncoder, barrelMotor);
+        liftPID = new PIDController(LP, LI, LD, liftEncoder, elevationMotor);
+        rotationPID = new PIDController(RP, RI, RD, rotationEncoder, barrelMotor);
 
 
         solenoid = new Relay(id_SOLENOID);
@@ -124,7 +137,9 @@ public class Robot extends IterativeRobot
         
         liftUpperLimitSwitch = new DigitalInput(id_LIFTUPPERLIMITSWITCH);
         liftLowerLimitSwitch = new DigitalInput(id_LIFTLOWERLIMITSWITCH);
-        warningLights = new Relay(id_WARNINGLIGHTS);
+        
+        //DEPRECATE
+        //warningLights = new Relay(id_WARNINGLIGHTS);
 
         lJoystick = new Joystick(1);
         rJoystick = new Joystick(2);
@@ -140,11 +155,21 @@ public class Robot extends IterativeRobot
      */
     public void teleopInit()
     {
+        System.out.println("[RobOS] Teleop enabled.");
+        
+        Bling.set(0);
+        
+        liftEncoder.start();
+        rotationEncoder.start();
+        
+        liftEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
+        rotationEncoder.setPIDSourceParameter(Encoder.PIDSourceParameter.kDistance);
+        
+        rotationPID.setAbsoluteTolerance(10);
+        
+        
         //liftPID.enable();
         rotationPID.enable();
-        Bling.set(0);
-        System.out.println("[RobOS] Teleop enabled.");
-        liftEncoder.start();
     }
     
     public void autonomousPeriodic()
@@ -165,18 +190,16 @@ public class Robot extends IterativeRobot
         boolean rightTrigger = rJoystick.getRawButton(id_RIGHTTRIGGER);
         boolean liftLowerLimitBool = !liftLowerLimitSwitch.get();
         boolean liftUpperLimitBool = !liftUpperLimitSwitch.get();
-        
-        
-        //System.out.println(rJoystick.getRawButton(3));
-        
-        //System.out.println("RX " + rightStickXAxis);
-        
-        //System.out.println(maybelX);
+        double liftEncoderCounts = liftEncoder.get();   
+        double rotationEncoderCounts = rotationEncoder.get();
         
         
         
-        double liftEncoderCounts = liftEncoder.getDistance();       
         //System.out.println(liftEncoderCounts);
+        System.out.println("Count " + rotationEncoderCounts);
+        System.out.println("Setpoint " + rotationPID.getSetpoint());
+        
+        //System.out.println("Count " + rotationPID.get());
         
 
         //Drive.drive(-leftStickYAxis, -rightStickYAxis);
@@ -187,7 +210,9 @@ public class Robot extends IterativeRobot
         leftMotor2.set(-leftStickYAxis);
         rightMotor1.set(rightStickYAxis);
         rightMotor2.set(rightStickYAxis);
-        barrelMotor.set(leftStickXAxis);
+        //barrelMotor.set(leftStickXAxis);
+        //rotationPID.set(leftStickXAxis);
+        
 
         
         /**
@@ -224,6 +249,7 @@ public class Robot extends IterativeRobot
                 elevationMotor.set(0);
         }
 
+        
         //Fire control code
         if (leftTrigger && rightTrigger) 
         {
@@ -232,6 +258,7 @@ public class Robot extends IterativeRobot
         }
         Launcher.timedActions();
 
+        
         //Light Strip activiation; based on either trigger being pressed
         if(leftTrigger || rightTrigger)
         {
@@ -252,7 +279,6 @@ public class Robot extends IterativeRobot
         
         
         
-        
         //Klaxon activation; based on pressing controller button
         if (lJoystick.getRawButton(id_KLAXONBUTTON) || rJoystick.getRawButton(id_KLAXONBUTTON))
         {
@@ -263,6 +289,7 @@ public class Robot extends IterativeRobot
             klaxon.set(Value.kOff);
         }
 
+        
         //Train Horn activation; based on pressing controller button
         if (lJoystick.getRawButton(id_TRAINHORNBUTTON) || rJoystick.getRawButton(id_TRAINHORNBUTTON))
         {
@@ -271,6 +298,20 @@ public class Robot extends IterativeRobot
         else
         {
             trainHorn.set(Value.kOff);
+        }
+        
+        //Reset barrel encoder counts. Temporary?
+        if(rJoystick.getRawButton(11))
+        {
+            rotationEncoder.reset();
+        }
+        
+        if(rJoystick.getRawButton(10))
+        {
+            
+            double current = rotationPID.get();
+            rotationPID.setSetpoint(current - 687.17);
+            
         }
         
         
@@ -286,18 +327,6 @@ public class Robot extends IterativeRobot
         else
         {
             barrelMotor.set(0);
-        } **/
-        
-        
-        //Get angle from D-pad, set bling
-        /**switch((int)joystick.getDirectionDegrees())
-        {
-            case(0):
-                //Bling.set(0);
-                break;
-            case(90):
-                //Bling.set(2);
-                break;
         } **/
     }
     /**

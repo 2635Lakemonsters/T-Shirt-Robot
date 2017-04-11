@@ -26,8 +26,8 @@ public class Launcher
     public int currentTick = 0;
     private int relayDelay = 5;
     
-    //TODO: Calibrate
-    public double deviation = 94;
+    //TODO: Calibrate. Is this michael's value?
+    public double deviation = -687.17;
 
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
@@ -49,7 +49,7 @@ public class Launcher
     {
         if(checkYourPrivilege()|| m_override)
         {
-            //Firing code here
+            //Passed safety check, fire cannon
             //System.out.println("Firing...");
             relay.set(Value.kForward);
             timer.tick();
@@ -101,14 +101,21 @@ public class Launcher
         {
             //System.out.println("Resetting...");
             relay.set(Value.kOff);
+            
+            //Indexing barrel forward
+            rotator.reset();
+            rotator.setSetpoint(deviation);
+            
+            /**
             double current = rotator.get();
             rotator.setSetpoint(current + deviation);
+            * **/
         }
 
         if (currentTick == 53)
         {
-            //Last Command, resetting timer
-            timer.reset();
+            //Last Command, resetting timer and incrementing barrel
+            timer.reset();       
         }
         
         if (currentTick == 1)
