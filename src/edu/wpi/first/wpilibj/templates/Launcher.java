@@ -5,6 +5,7 @@
  */
 package edu.wpi.first.wpilibj.templates;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  * Encapsulation for the Launcher. Call fire() to fire the cannon. If it refuses
  * to fire, it is likely failing the checkYourPrivilege() safety check.
  *
- * @author Siren
+ * @author Matthew
  */
 public class Launcher
 {
@@ -25,21 +26,32 @@ public class Launcher
     private final PIDController rotator;
     public int currentTick = 0;
     private int relayDelay = 5;
-    
-    //TODO: Calibrate. Is this michael's value?
-    public double deviation = -687.17;
+    private int currentIndex = 0;
+    double[] indexes = new double[7];
+    Encoder encoder;
+
 
     /**
      * @param rotateMotor Pass the variable containing the barrel rotation motor
      * @param solenoid Pass the variable containing the firing solenoid
      * @param barrelEncoder Encoder PID Loop for barrel rotation   
      */
-    public Launcher(SpeedController rotateMotor, Relay solenoid, PIDController barrelEncoder)
+    public Launcher(SpeedController rotateMotor, Relay solenoid, PIDController barrelEncoder, Encoder rotationEncoder)
     {
         relay = solenoid;
         timer = new Timer();
         //barrelMotor = rotateMotor;
         rotator = barrelEncoder;
+        encoder = rotationEncoder;
+        
+        //Encoder values for barrel positions
+        indexes[0] = 0;
+        indexes[1] = -642;
+        indexes[2] = -1321;
+        indexes[3] = -1956;
+        indexes[4] = -2640;
+        indexes[5] = -3311;
+        indexes[6] = -3967;
     }
     
     /**
@@ -103,13 +115,7 @@ public class Launcher
             relay.set(Value.kOff);
             
             //Indexing barrel forward
-            rotator.reset();
-            rotator.setSetpoint(deviation);
-            
-            /**
-            double current = rotator.get();
-            rotator.setSetpoint(current + deviation);
-            * **/
+            index();
         }
 
         if (currentTick == 53)
@@ -137,5 +143,41 @@ public class Launcher
     {
         --relayDelay;
         System.out.println("[RobOS] Relay Delay: " + relayDelay);
+    }
+    
+    //Indexes barrel to next position.
+    public void index()
+    {
+        
+        //Resets the encoder to zero, since the barrel is in position zero
+        if(currentIndex == 0)
+        {
+            encoder.reset();
+        }
+        
+        //Prepare to advance to next barrel
+        ++currentIndex;
+        
+        double nextSetpoint = indexes[currentIndex];
+        rotator.setSetpoint(nextSetpoint);
+        
+        //When barrels reach position 6, resets index to positon zero
+        //This works because position zero and position 6 are the same barrel
+        if(currentIndex == 6)
+        {
+            currentIndex = 0;
+        }
+    }
+    
+    public void setIndex(int index)
+    {
+        currentIndex = index;
+    }
+    
+    //Runs the barrels forward to position 6, then sets index to zero
+    public void goToZero()
+    {
+        rotator.setSetpoint(indexes[6]);
+        currentIndex = 0;
     }
 }

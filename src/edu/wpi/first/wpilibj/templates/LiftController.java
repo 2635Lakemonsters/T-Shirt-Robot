@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Talon;
 
 /**
  *
- * @author localuser
+ * @author Matthew
  */
 public class LiftController
 {

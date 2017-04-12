@@ -7,7 +7,7 @@ package edu.wpi.first.wpilibj.templates;
 
 /**
  *
- * @author Siren
+ * @author Matthew
  */
 public class Timer
 {

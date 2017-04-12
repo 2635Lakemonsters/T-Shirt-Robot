@@ -145,7 +145,7 @@ public class Robot extends IterativeRobot
         rJoystick = new Joystick(2);
         
         Drive = new ArcadeDrive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
-        Launcher = new Launcher(barrelMotor, solenoid, rotationPID);
+        Launcher = new Launcher(barrelMotor, solenoid, rotationPID, rotationEncoder);
         Tracker = new StateTracker();
         Bling = new Bling();
     }
@@ -300,10 +300,24 @@ public class Robot extends IterativeRobot
             trainHorn.set(Value.kOff);
         }
         
+        //Index Barrel foward
+        if(rJoystick.getRawButton(8))
+        {
+            Launcher.index();
+        }
+        
+        //Index Barrel forward
+        if(rJoystick.getRawButton(9))
+        {
+            Launcher.goToZero();
+        }
+        
         //Reset barrel encoder counts. Temporary?
         if(rJoystick.getRawButton(11))
         {
             rotationEncoder.reset();
+            rotationPID.setSetpoint(0);
+            Launcher.setIndex(0);
         }
         
         if(rJoystick.getRawButton(10))
